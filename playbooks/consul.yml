@@ -1,0 +1,87 @@
+#- hosts: all
+#- name: Run playbook locally
+#  hosts: 127.0.0.1
+#  connection: local
+  user: centos
+  vars:
+    hashi_product: consul
+    hashi_version: 1.5.1
+  tasks:
+  - name: Create group for HashiProduct
+    group:
+      name: "{{ hashi_product }}"
+      state: present
+    become: true
+
+  - name: Create user for HashiProduct
+    user:
+      name: "{{ hashi_product }}"
+      shell: /bin/false
+      group: "{{ hashi_product }}"
+      state: present
+    become: true
+
+  - name: Download, unpackage, and place binary into /usr/local/bin/
+    block:
+    - name: Download HashiCorp Products
+      get_url:
+        url: "https://releases.hashicorp.com/{{ hashi_product }}/{{ hashi_version }}/{{ hashi_product }}_{{ hashi_version }}_linux_amd64.zip"
+        dest: /home/vagrant/
+        owner: vagrant
+        group: vagrant
+    - name: Unzip HashiCorp Products
+      unarchive:
+        src: "/home/vagrant/{{ hashi_product }}_{{ hashi_version }}_linux_amd64.zip"
+        dest: /home/vagrant/
+        owner: vagrant
+        group: vagrant
+    - name: Copy HashiCorp Products to /usr/local/bin/
+      copy:
+        src: "/home/vagrant/{{ hashi_product }}"
+        dest: "/usr/local/bin/{{ hashi_product }}"
+        mode: 0755
+      become: true
+
+  - name: Make HashiCorp Product configuration directory
+    file:
+      path: "/etc/{{ hashi_product }}.d/"
+      state: directory
+      mode: 0755
+    become: true
+
+  - name: If HashiCorp Product is Consul, create and populate systemd file
+    block:
+    - name: Create empty Consul systemd file
+      file:
+        path: /etc/systemd/system/consul.service
+        state: touch
+      become: true
+    - name: Populate Consul systemd file
+      copy:
+        dest: /etc/systemd/system/consul.service
+        content: |
+          [Unit]
+          Description="HashiCorp Consul - A service mesh solution"
+          Documentation=https://www.consul.io/
+          Requires=network-online.target
+          After=network-online.target
+
+          [Service]
+          User=consul
+          Group=consul
+          ExecStart=/usr/local/bin/consul agent -server -bootstrap-expect=1 -data-dir=/tmp/consul -bind {{ ansible_eth1.ipv4.address }} -client 0.0.0.0 -ui -config-dir=/etc/consul.d/
+          ExecReload=/usr/local/bin/consul reload
+          KillMode=process
+          Restart=on-failure
+          LimitNOFILE=65536
+
+          [Install]
+          WantedBy=multi-user.target
+      become: true
+    - name: Enable & Start Consul
+      service:
+        name: consul
+        state: started
+        enabled: yes
+      become: true
+#    when: hashi_product == "consul"
