@@ -2,7 +2,6 @@
 #- name: Run playbook locally
 #  hosts: 127.0.0.1
 #  connection: local
-  user: centos
   vars:
     hashi_product: consul
     hashi_version: 1.5.1
