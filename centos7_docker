@@ -7,18 +7,18 @@
       "instance_type": "t2.micro",
       "associate_public_ip_address": "true",
       "source_ami": "ami-04c8f5f62c97ab823",
-      "ami_name": "bbrooks-centos7_consul-{{isotime \"20060102030405\"}}",
+      "ami_name": "bbrooks-centos7_docker-{{isotime \"20060102030405\"}}",
       "tags": {
-        "Name": "bbrooks-centos7_consul-{{isotime \"20060102030405\"}}",
+        "Name": "bbrooks-centos7_docker-{{isotime \"20060102030405\"}}",
         "From": "CentOS7 Official US-East-2 ami-0f2b4fc905b0bd1f1"
-        
+
       }
     }
   ],
   "provisioners": [{
       "type": "ansible",
       "user": "centos",
-      "playbook_file": "playbooks/consul.yml"
+      "playbook_file": "playbooks/docker.yml"
     }
   ]
 }

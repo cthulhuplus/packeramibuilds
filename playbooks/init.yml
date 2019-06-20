@@ -1,14 +1,17 @@
 - hosts: all
   vars:
   tasks:
-  - name: Install unzip
+  - name: Run Updates
+    package:
+      name: '*'
+      state: latest
+    become: true
+  - name: Install init Packages
     package:
       name: unzip
       state: present
     become: true
-  - name: Install vim
-    package:
-      name: vim
-      state: present
-    become: true
-    
+    with_items:
+      - unzip
+      - vim
+      - bind-utils
