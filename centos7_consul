@@ -6,7 +6,7 @@
       "ssh_username": "centos",
       "instance_type": "t2.micro",
       "associate_public_ip_address": "true",
-      "source_ami": "ami-0f2b4fc905b0bd1f1",
+      "source_ami": "ami-0eb787a69bab2ac58",
       "ami_name": "bbrooks-centos7_consul-{{isotime \"20060102030405\"}}",
       "tags": {
         "Name": "bbrooks-centos7_consul-{{isotime \"20060102030405\"}}",

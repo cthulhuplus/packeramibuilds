@@ -1,0 +1,14 @@
+- hosts: all
+  vars:
+  tasks:
+  - name: Install unzip
+    package:
+      name: unzip
+      state: present
+    become: true
+  - name: Install vim
+    package:
+      name: vim
+      state: present
+    become: true
+    
