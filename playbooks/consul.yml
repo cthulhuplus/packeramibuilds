@@ -1,17 +1,8 @@
 - hosts: all
-#- name: Run playbook locally
-#  hosts: 127.0.0.1
-#  connection: local
   vars:
     hashi_product: consul
     hashi_version: 1.5.1
   tasks:
-  - name: Install unzip
-    package:
-      name: unzip
-      state: present
-    become: true
-
   - name: Create group for HashiProduct
     group:
       name: "{{ hashi_product }}"

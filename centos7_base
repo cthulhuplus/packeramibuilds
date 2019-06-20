@@ -14,5 +14,11 @@
         
       }
     }
+  ],
+  "provisioners": [{
+      "type": "ansible",
+      "user": "centos",
+      "playbook_file": "playbooks/init.yml"
+    }
   ]
 }
