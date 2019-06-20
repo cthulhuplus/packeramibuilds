@@ -1,0 +1,28 @@
+- hosts: all
+  vars:
+  tasks:    
+  - name: Install Docker Dependencies
+    yum:
+      name: "{{ item }}"
+      state: present
+    become: true
+    with_items:
+      - yum-utils
+      - device-mapper-persistent-data
+      - lvm2
+  - name: Add Docker Repo
+    get_url:
+      url: https://download.docker.com/linux/centos/docker-ce.repo
+      dest: /etc/yum.repos.d/docer-ce.repo
+    become: true
+  - name: Install Docker
+    package:
+      name: docker-ce
+      state: latest
+    become: yes
+  - name: Start Docker Service
+    service:
+      name: docker
+      state: started
+      enabled: yes
+    become: yes
